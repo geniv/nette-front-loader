@@ -1,0 +1,28 @@
+{
+  "name": "geniv/nette-front-loader",
+  "description": "Front loader extension for Nette Framework",
+  "keywords": [
+    "nette",
+    "front",
+    "loader",
+    "css",
+    "js",
+    "geniv"
+  ],
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Radek Fryšták",
+      "email": "geniv.radek@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6.0",
+    "nette/nette": ">=2.4.0"
+  },
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  }
+}
