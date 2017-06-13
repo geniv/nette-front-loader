@@ -3,9 +3,7 @@
 namespace FrontLoader\Bridges\Nette;
 
 use FrontLoader\Bridges\Tracy\Panel;
-//use FrontLoader\CssLoader\CssLoader;
 use FrontLoader\FrontLoader;
-//use FrontLoader\JsLoader\JsLoader;
 use Nette\DI\CompilerExtension;
 
 
@@ -25,10 +23,8 @@ class Extension extends CompilerExtension
         'dir'            => null,
         'css'            => [],
         'js'             => [],
-        'tagDev'         => '',
+        'tagDev'         => '.',
         'tagProd'        => '.min.',
-        'extJs'          => 'js',
-        'extCss'         => 'css',
     ];
 
 
@@ -49,15 +45,7 @@ class Extension extends CompilerExtension
         $builder->addDefinition($this->prefix('default'))
             ->setClass(FrontLoader::class, [$config]);
 
-        // definice css loaderu
-//        $builder->addDefinition($this->prefix('loader.css'))
-//            ->setClass(CssLoader::class, [$config]);
-
-        // definice js loaderu
-//        $builder->addDefinition($this->prefix('loader.js'))
-//            ->setClass(JsLoader::class, [$config]);
-
-        // definice panelu
+        // definition panel
         $builder->addDefinition($this->prefix('panel'))
             ->setClass(Panel::class);
     }
