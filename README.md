@@ -70,15 +70,17 @@ protected function createComponentFrontLoader(FrontLoader $frontLoader)
 
 presenter *.latte:
 ```latte
-{block frontLoaderCss}
-    {include parent}
-{/block}
-
 {block content}
 ...
 {/block}
 
+{block frontLoaderCss}
+    {include parent}
+    <link rel="stylesheet" href="source.css">
+{/block}
+
 {block frontLoaderJs}
     {include parent}
+    <script src="source.js"></script>
 {/block}
 ```
