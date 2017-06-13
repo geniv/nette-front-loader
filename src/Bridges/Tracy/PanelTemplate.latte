@@ -1,4 +1,4 @@
-<h1>Front loader files</h1>
+<h1>Front loader</h1>
 <div class="tracy-inner">
     <table class="table" n:foreach="$files as $type => $items">
         <caption>{$type}</caption>
@@ -13,6 +13,9 @@
             {php $str=parse_url($file, PHP_URL_QUERY); parse_str($str, $out);}
             <td>{$file}</td>
             <td>{$out['mt']|date:'d.m.Y H:i:s'}</td>
+        </tr>
+        <tr n:if="$iterations==0">
+            <td colspan="2" style="text-align: center;">No file</td>
         </tr>
         </tbody>
     </table>
