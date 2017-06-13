@@ -55,12 +55,17 @@ class FrontLoader extends Control
     {
         $parameters = $this->parameters;
         $path = $parameters['dir'] . '/';
+        // separe last path
+        $dir = basename($path);
 
         // process array
-        return array_map(function ($item) use ($type, $parameters, $path) {
+        return array_map(function ($item) use ($type, $parameters, $dir, $path) {
             $name = $item . ($parameters['productionMode'] ? $parameters['tagProd'] : $parameters['tagDev']) . $type;
-            if (file_exists($path . $name)) {
-                return $name . '?mt=' . filemtime($path . $name);
+
+            if (substr($name, 0, 4) == 'http') {    // detect url
+                return $item;
+            } else if (file_exists($path . $name)) {    // detect file
+                return $dir . '/' . $name . '?mt=' . filemtime($path . $name);
             } else {
                 if ($this->logger && $parameters['productionMode']) {
                     $this->logger->log('File: "' . $path . $name . '" does not exist!', ILogger::WARNING);
@@ -79,9 +84,6 @@ class FrontLoader extends Control
      */
     private function renderFiles($files, $type)
     {
-        // separe last path
-        $dir = basename($this->parameters['dir']);
-
         switch ($type) {
             case 'css':
                 $format = '<link rel="stylesheet" href="%s">';
@@ -93,8 +95,8 @@ class FrontLoader extends Control
         }
 
         // process files
-        return implode(PHP_EOL, array_map(function ($item) use ($format, $dir) {
-            return sprintf($format, $dir . '/' . $item);
+        return implode(PHP_EOL, array_map(function ($item) use ($format) {
+            return sprintf($format, $item);
         }, $files));
     }
 
