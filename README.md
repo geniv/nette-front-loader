@@ -55,18 +55,22 @@ protected function createComponentFrontLoader(FrontLoader $frontLoader)
 
 @layout.latte
 ```latte
-{block head}
+{block frontLoaderCss}
+    {control frontLoader:css}
+    or
     {control frontLoader:css, 'front'}
 {/block}
 
-{block scripts}
+{block frontLoaderJs}
+    {control frontLoader:js}
+    or
     {control frontLoader:js, 'front'}
 {/block}
 ```
 
 presenter *.latte:
 ```latte
-{block head}
+{block frontLoaderCss}
     {include parent}
 {/block}
 
@@ -74,7 +78,7 @@ presenter *.latte:
 ...
 {/block}
 
-{block scripts}
+{block frontLoaderJs}
     {include parent}
 {/block}
 ```
