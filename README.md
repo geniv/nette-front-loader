@@ -25,11 +25,13 @@ frontLoader:
     dir: %wwwDir%
     css:    # files without extension
         - css/global
+        - "https://fonts.googleapis.com"
         front:  # source
             - css/styles1
             - css/styles2
     js:     # files without extension
         - js/global
+        - "https://cdnjs.com"
         front:  # source
             - js/script1
             - js/script2
