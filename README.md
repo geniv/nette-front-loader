@@ -2,39 +2,39 @@ Front loader
 ============
 for CSS &amp; JS loader
 
+```sh
+$ composer require geniv/nette-front-loader
+```
+or
+```json
+"geniv/nette-front-loader": ">=1.0"
+```
+
+internal dependency:
+```json
+"nette/nette": ">=2.4.0"
+```
+
 Include in application
 ----------------------
 neon configure:
 ```neon
+# front loader
 frontLoader:
     productionMode: true
     dir: %wwwDir%
     css:    # files without extension
-#        - css/global
+        - css/global
         front:  # source
             - css/styles1
             - css/styles2
-#            - css/styles2.less
     js:     # files without extension
-#        - js/global
+        - js/global
         front:  # source
             - js/script1
             - js/script2
-#            async:
-#                - js/async-script
-#    json:
-#        - json/global
-#        front:
-#            - json/file
-#            - http://google.cz/api/file.json
-#            dev:
-#                - http://google.cz/api/file-dev.json
-#            prod:
-#                - http://google.cz/api/file-prod.json
-    tagDev: ''
+    tagDev: '.'
     tagProd: '.min.'
-    extJs: js
-    extCss: css
 ```
 
 neon configure extension:
@@ -43,18 +43,18 @@ extensions:
     frontLoader: FrontLoader\Bridges\Nette\Extension
 ```
 
-/** @var FrontLoader @inject */
-public $jsControl;
+usage:
+```php
+use FrontLoader\FrontLoader;
 
-/**
- * @return FrontLoader
- */
 protected function createComponentFrontLoader(FrontLoader $frontLoader)
 {
-    return $this->frontLoader;
+    return $frontLoader;
 }
+```
 
 @layout.latte
+```latte
 {block head}
     {control frontLoader:css, 'front'}
 {/block}
@@ -62,20 +62,19 @@ protected function createComponentFrontLoader(FrontLoader $frontLoader)
 {block scripts}
     {control frontLoader:js, 'front'}
 {/block}
+```
 
 presenter *.latte:
-{*
+```latte
 {block head}
     {include parent}
 {/block}
-*}
 
 {block content}
 ...
 {/block}
 
-{*
 {block scripts}
     {include parent}
 {/block}
-*}
+```

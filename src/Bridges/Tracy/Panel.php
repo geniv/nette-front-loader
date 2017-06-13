@@ -74,32 +74,11 @@ class Panel implements IBarPanel
      */
     public function getPanel()
     {
-//        $locale = $this->container->getByType(Locale::class);   // nacteni lokalizacni sluzby
-//        $application = $this->container->getByType(Application::class);    // nacteni aplikace
-//        $presenter = $application->getPresenter();  // nacteni presenteru
-//
-//        $translateMap = new TranslateMap;
-//        // vyrazeni prekladu z @layout
-//        $layoutLatte = dirname($presenter->template->getFile()) . '/../@layout.latte';
-//        $layoutTranslate = (file_exists($layoutLatte) ? $this->extractFile($layoutLatte, $translateMap) : []);
-//        // vytazeni prekladu z aktualniho souboru
-//        $contentTranslate = ($presenter->template->getFile() ? $this->extractFile($presenter->template->getFile(), $translateMap) : []);
-//
-//        $params = [
-//            // locales
-//            'locales'          => $locale->getLocales(),
-//            'localeCode'       => $locale->getCode(),
-//            // translates
-//            'translateLayout'  => $layoutTranslate,
-//            'translateContent' => $contentTranslate,
-//            'translateClass'   => get_class($this->translator),
-//            'translateSearch'  => $this->translator->searchTranslate(array_merge($layoutTranslate, $contentTranslate)),   // vyhledani prekladu v driveru prekladace
-//            'translatesMap'    => $translateMap->toArray(), // mapa umisteni prekladu
-//        ];
-//
-//        $latte = new Engine;
-//        return $latte->renderToString(__DIR__ . '/PanelTemplate.latte', $params);
+        $params = [
+            'files' => $this->frontLoader->getFiles(),
+        ];
 
-        return '...';
+        $latte = new Engine;
+        return $latte->renderToString(__DIR__ . '/PanelTemplate.latte', $params);
     }
 }

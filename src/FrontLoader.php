@@ -4,6 +4,7 @@ namespace FrontLoader;
 
 use Exception;
 use Nette\Application\UI\Control;
+use Tracy\ILogger;
 
 
 /**
@@ -15,110 +16,145 @@ use Nette\Application\UI\Control;
 class FrontLoader extends Control
 {
     /** @var array */
-    protected $parameters;
-
-    /** @var string */
-    protected $templatePath;
-
+    private $parameters;
+    /** @var null|ILogger */
+    private $logger;
     /** @var array */
-    protected $files;
-
-    protected $type;
-//TODO __call() !!! like configurator!
+    private $files = [];
 
 
     /**
      * FrontLoader constructor.
      *
-     * @param array $parameters
+     * @param array        $parameters
+     * @param ILogger|null $logger
      * @throws Exception
      */
-    public function __construct(array $parameters)
+    public function __construct(array $parameters, ILogger $logger = null)
     {
         parent::__construct();
 
         // pokud parametr table neexistuje
         if (!isset($parameters['dir'])) {
-            throw new Exception('Parameters dir is not defined in configure! (dir: wwwDir)');
+            throw new Exception('Parameters dir is not defined in configure! (dir: %wwwDir%)');
         }
 
-
-//        $parameters['productionMode']
-//        $parameters['tagDev']
-//        $parameters['tagProd']
-//        $parameters['extJs']
-//        $parameters['extCss']
-
         $this->parameters = $parameters;
+        $this->logger = $logger;
     }
 
 
     /**
-     * Set template path.
+     * Select valid files.
      *
-     * @param string $path
-     * @return $this
+     * @param $files
+     * @param $type
+     * @return array
      */
-    public function setTemplatePath($path)
+    private function processFiles($files, $type)
     {
-        $this->templatePath = $path;
-        return $this;
-    }
+        $parameters = $this->parameters;
+        $path = $parameters['dir'] . '/';
 
-
-    public function __call($name, $args)
-    {
-        if (!in_array($name, ['onAnchor'])) {   // except onAnchor
-            $method = strtolower(substr($name, 6)); // nacteni jmena
-
-            dump($this->parameters[$method]);
-
-//            if (!isset($args[0])) {
-//                throw new Exception('Nebyl zadany parametr identu.');
-//            }
-        }
-    }
-
-
-    public function render($source)
-    {
-        // is exist source in files
-        if (!array_key_exists($source, $this->files)) {
-            throw new Exception('Parameters css/js is not defined in configure! (table: xy)');
-        }
-
-        if (!is_array($this->data[$source]['files'])) {
-//            throw new InvalidArgumentException($this->data[$source] . ' - files is not array.');
-        }
-
-        foreach ($this->data[$source]['files'] as $file) {
-
-            if (pathinfo($file, PATHINFO_EXTENSION) === self::PATH_EXTENSION) {
-                $filePath = $this->parameters['dir'] . '/' . $file;
-                if (file_exists($filePath)) {
-                    $this->addToTemplateData($filePath, $file);
-                } else {
-                    $this->sendFileNotFoundException($file);
-                }
+        // process array
+        return array_map(function ($item) use ($type, $parameters, $path) {
+            $name = $item . ($parameters['productionMode'] ? $parameters['tagProd'] : $parameters['tagDev']) . $type;
+            if (file_exists($path . $name)) {
+                return $name . '?mt=' . filemtime($path . $name);
             } else {
-                $extension = $this->isProduction ? '.min.' . self::PATH_EXTENSION : '.' . self::PATH_EXTENSION;
-                $filePath = $this->wwwDir . '/' . $file . $extension;
-
-                $extension2 = !$this->isProduction ? '.min.' . self::PATH_EXTENSION : '.' . self::PATH_EXTENSION;
-                $filePath2 = $this->wwwDir . '/' . $file . $extension;
-
-                if (file_exists($filePath)) {
-//                    $this->addToTemplateData($filePath, $file . $extension);
-                } elseif (file_exists($filePath2)) {
-//                    $this->addToTemplateData($filePath2, $file . $extension2);
-                } else {
-//                    $this->sendFileNotFoundException($file);
+                if ($this->logger && $parameters['productionMode']) {
+                    $this->logger->log('File: "' . $path . $name . '" does not exist!', ILogger::WARNING);
                 }
             }
+        }, $files);
+    }
+
+
+    /**
+     * Render valid files.
+     *
+     * @param $files
+     * @param $type
+     * @return string
+     */
+    private function renderFiles($files, $type)
+    {
+        // separe last path
+        $dir = basename($this->parameters['dir']);
+
+        switch ($type) {
+            case 'css':
+                $format = '<link rel="stylesheet" href="%s">';
+                break;
+
+            case 'js':
+                $format = '<script type="text/javascript" src="%s"></script>';
+                break;
         }
 
-        $this->template->data = $this->templateData;
-        $this->template->setFile($this->templatePath);
-        $this->template->render();
+        // process files
+        return implode(PHP_EOL, array_map(function ($item) use ($format, $dir) {
+            return sprintf($format, $dir . '/' . $item);
+        }, $files));
+    }
+
+
+    /**
+     * Magic method.
+     *
+     * @param $name
+     * @param $args
+     * @return mixed|void
+     */
+    public function __call($name, $args)
+    {
+        // if not onAnchor
+        if (!in_array($name, ['onAnchor'])) {
+            // load type
+            $type = strtolower(substr($name, 6));
+            // if type exist
+            if (isset($this->parameters[$type])) {
+                // load files of type
+                $typeFiles = $this->parameters[$type];
+
+                // global files
+                $globalTypeFiles = [];
+                array_walk($typeFiles, function ($item, $key) use (&$globalTypeFiles) {
+                    if (is_int($key)) {
+                        $globalTypeFiles[] = $item;
+                    }
+                });
+                $globalFiles = $this->processFiles($globalTypeFiles, $type);
+
+                // source files
+                $files = [];
+                if (isset($args[0])) {
+                    $source = $args[0];
+                    if (isset($typeFiles[$source])) {
+                        $files = $this->processFiles($typeFiles[$source], $type);
+                    }
+                }
+
+                // merge global+source, filter null and select unique files
+                $files = array_unique(array_filter(array_merge($globalFiles, $files)));
+                // transfer for tracy
+                $this->files[$type] = $files;
+
+                echo $this->renderFiles($files, $type);
+            }
+        }
+    }
+
+
+    /**
+     * Get files for tracy.
+     *
+     * Use in Panel::getPanel().
+     *
+     * @return mixed
+     */
+    public function getFiles()
+    {
+        return $this->files;
     }
 }
