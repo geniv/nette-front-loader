@@ -2,20 +2,52 @@
 
 namespace FrontLoader;
 
+use Exception;
 use Nette\Application\UI\Control;
 
 
 /**
  * Class FrontLoader
  *
+ * @author  geniv, inspired by Petr Gräf
  * @package FrontLoader
  */
 class FrontLoader extends Control
 {
+    /** @var array */
+    protected $parameters;
 
+    /** @var string */
+    protected $templatePath;
+
+    /** @var array */
+    protected $files;
+
+    protected $type;
+//TODO __call() !!! like configurator!
+
+
+    /**
+     * FrontLoader constructor.
+     *
+     * @param array $parameters
+     * @throws Exception
+     */
     public function __construct(array $parameters)
     {
         parent::__construct();
+
+        // pokud parametr table neexistuje
+        if (!isset($parameters['dir'])) {
+            throw new Exception('Parameters dir is not defined in configure! (dir: wwwDir)');
+        }
+
+
+//        $parameters['productionMode']
+//        $parameters['tagDev']
+//        $parameters['tagProd']
+//        $parameters['extJs']
+//        $parameters['extCss']
 
         $this->parameters = $parameters;
     }
@@ -34,23 +66,35 @@ class FrontLoader extends Control
     }
 
 
+    public function __call($name, $args)
+    {
+        if (!in_array($name, ['onAnchor'])) {   // except onAnchor
+            $method = strtolower(substr($name, 6)); // nacteni jmena
+
+            dump($this->parameters[$method]);
+
+//            if (!isset($args[0])) {
+//                throw new Exception('Nebyl zadany parametr identu.');
+//            }
+        }
+    }
+
+
     public function render($source)
     {
-        if (!array_key_exists($source, $this->data)) {
-            throw new InvalidArgumentException('$source "' . $source . '" not exist.');
-        }
-
-        if (!array_key_exists('files', $this->data[$source])) {
-            throw new InvalidArgumentException($this->data[$source] . ' - missing files config.');
+        // is exist source in files
+        if (!array_key_exists($source, $this->files)) {
+            throw new Exception('Parameters css/js is not defined in configure! (table: xy)');
         }
 
         if (!is_array($this->data[$source]['files'])) {
-            throw new InvalidArgumentException($this->data[$source] . ' - files is not array.');
+//            throw new InvalidArgumentException($this->data[$source] . ' - files is not array.');
         }
 
         foreach ($this->data[$source]['files'] as $file) {
+
             if (pathinfo($file, PATHINFO_EXTENSION) === self::PATH_EXTENSION) {
-                $filePath = $this->wwwDir . '/' . $file;
+                $filePath = $this->parameters['dir'] . '/' . $file;
                 if (file_exists($filePath)) {
                     $this->addToTemplateData($filePath, $file);
                 } else {
@@ -64,11 +108,11 @@ class FrontLoader extends Control
                 $filePath2 = $this->wwwDir . '/' . $file . $extension;
 
                 if (file_exists($filePath)) {
-                    $this->addToTemplateData($filePath, $file . $extension);
+//                    $this->addToTemplateData($filePath, $file . $extension);
                 } elseif (file_exists($filePath2)) {
-                    $this->addToTemplateData($filePath2, $file . $extension2);
+//                    $this->addToTemplateData($filePath2, $file . $extension2);
                 } else {
-                    $this->sendFileNotFoundException($file);
+//                    $this->sendFileNotFoundException($file);
                 }
             }
         }

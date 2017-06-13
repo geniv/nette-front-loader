@@ -10,58 +10,23 @@ use Nette\InvalidArgumentException;
 /**
  * Class JsLoader
  *
+ * @author  geniv
  * @package FrontLoader\JsLoader
  */
 class JsLoader extends FrontLoader
 {
-    const PATH_EXTENSION = 'js';
-
-    /**
-     * @var string
-     */
-    private $wwwDir;
-
-    /**
-     * @var array
-     */
-    private $data;
-
-    /**
-     * @var string
-     */
-    private $templatePath;
-
-    /**
-     * @var bool
-     */
-    private $isProduction;
-
-    /**
-     * @var array
-     */
-    private $templateData = array();
-
 
     /**
      * JsLoader constructor.
      *
-     * @param string $wwwDir
-     * @param array  $data
-     * @param string $environment
+     * @param array $parameters
      */
     public function __construct(array $parameters)
     {
         parent::__construct($parameters);
 
-
-        $this->wwwDir = $wwwDir;
-        $this->data = $data;
-
-        $this->isProduction = false;
-        if ($environment === 'production') {
-            $this->isProduction = true;
-        }
-
+        $this->files = $parameters['js'];
+        $this->type ='js';
         $this->templatePath = __DIR__ . '/JsLoader.latte';
     }
 

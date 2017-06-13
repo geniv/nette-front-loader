@@ -9,10 +9,32 @@ neon configure:
 frontLoader:
     productionMode: true
     dir: %wwwDir%
-    css:    # files without extension - dev = .css / prod = .min.css
-        - css/styles
-    js:     # files without extension - dev = .js / prod = .min.js
-        - js/script
+    css:    # files without extension
+#        - css/global
+        front:  # source
+            - css/styles1
+            - css/styles2
+#            - css/styles2.less
+    js:     # files without extension
+#        - js/global
+        front:  # source
+            - js/script1
+            - js/script2
+#            async:
+#                - js/async-script
+#    json:
+#        - json/global
+#        front:
+#            - json/file
+#            - http://google.cz/api/file.json
+#            dev:
+#                - http://google.cz/api/file-dev.json
+#            prod:
+#                - http://google.cz/api/file-prod.json
+    tagDev: ''
+    tagProd: '.min.'
+    extJs: js
+    extCss: css
 ```
 
 neon configure extension:
@@ -21,45 +43,25 @@ extensions:
     frontLoader: FrontLoader\Bridges\Nette\Extension
 ```
 
-
-/**
- * @var CssControl
- * @inject
- */
-public $cssControl;
-
-/**
- * @var JsControl
- * @inject
- */
+/** @var FrontLoader @inject */
 public $jsControl;
 
-
 /**
- * @return CssControl
+ * @return FrontLoader
  */
-protected function createComponentCssLoader(CssLoader $cssLoader)
+protected function createComponentFrontLoader(FrontLoader $frontLoader)
 {
-    return $this->cssControl;
-}
-
-/**
- * @return JsControl
- */
-protected function createComponentJsLoader(JsLoader $jsLoader)
-{
-    return $this->jsControl;
+    return $this->frontLoader;
 }
 
 @layout.latte
 {block head}
-    {control cssControl, 'front'}
+    {control frontLoader:css, 'front'}
 {/block}
 
 {block scripts}
-    {control jsControl, 'front'}
+    {control frontLoader:js, 'front'}
 {/block}
-    
 
 presenter *.latte:
 {*
