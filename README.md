@@ -25,11 +25,13 @@ frontLoader:
     dir: %wwwDir%
     css:    # files without extension
         - css/global
+        - "https://fonts.googleapis.com"
         front:  # source
             - css/styles1
             - css/styles2
     js:     # files without extension
         - js/global
+        - "https://cdnjs.com"
         front:  # source
             - js/script1
             - js/script2
@@ -55,26 +57,32 @@ protected function createComponentFrontLoader(FrontLoader $frontLoader)
 
 @layout.latte
 ```latte
-{block head}
+{block frontLoaderCss}
+    {control frontLoader:css}
+    or
     {control frontLoader:css, 'front'}
 {/block}
 
-{block scripts}
+{block frontLoaderJs}
+    {control frontLoader:js}
+    or
     {control frontLoader:js, 'front'}
 {/block}
 ```
 
 presenter *.latte:
 ```latte
-{block head}
-    {include parent}
-{/block}
-
 {block content}
 ...
 {/block}
 
-{block scripts}
+{block frontLoaderCss}
     {include parent}
+    <link rel="stylesheet" href="source.css">
+{/block}
+
+{block frontLoaderJs}
+    {include parent}
+    <script src="source.js"></script>
 {/block}
 ```

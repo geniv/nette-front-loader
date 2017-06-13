@@ -1,18 +1,18 @@
 <h1>Front loader</h1>
 <div class="tracy-inner">
     <table class="table" n:foreach="$files as $type => $items">
-        <caption>{$type}</caption>
+        <caption>{$type|upper}</caption>
         <thead>
         <tr>
-            <th>File</th>
+            <th>File / Url</th>
             <th>Modify time</th>
         </tr>
         </thead>
         <tbody>
         <tr n:foreach="$items as $mtime => $file">
             {php $str=parse_url($file, PHP_URL_QUERY); parse_str($str, $out);}
-            <td>{$file}</td>
-            <td>{$out['mt']|date:'d.m.Y H:i:s'}</td>
+            <td>{$file|truncate:40}</td>
+            <td>{ifset $out['mt']}{$out['mt']|date:'d.m.Y H:i:s'}{else}---{/ifset}</td>
         </tr>
         <tr n:if="$iterations==0">
             <td colspan="2" style="text-align: center;">No file</td>
