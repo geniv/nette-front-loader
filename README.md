@@ -21,7 +21,8 @@ neon configure:
 ```neon
 # front loader
 frontLoader:
-    productionMode: true
+#   debugger: false
+#   productionMode: true
     dir: %wwwDir%
     css:    # files without extension
         - css/global

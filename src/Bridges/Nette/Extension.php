@@ -19,6 +19,7 @@ class Extension extends CompilerExtension
 {
     /** @var array vychozi hodnoty */
     private $defaults = [
+        'debugger'       => true,
         'productionMode' => false,
         'dir'            => null,
         'css'            => [],
@@ -57,9 +58,12 @@ class Extension extends CompilerExtension
     public function beforeCompile()
     {
         $builder = $this->getContainerBuilder();
+        $config = $this->validateConfig($this->defaults);
 
-        // pripojeni panelu do tracy
-        $builder->getDefinition($this->prefix('default'))
-            ->addSetup('?->register(?)', [$this->prefix('@panel'), '@self']);
+        if ($config['debugger']) {
+            // pripojeni panelu do tracy
+            $builder->getDefinition($this->prefix('default'))
+                ->addSetup('?->register(?)', [$this->prefix('@panel'), '@self']);
+        }
     }
 }
