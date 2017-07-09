@@ -10,8 +10,6 @@ use Nette\DI\CompilerExtension;
 /**
  * Class Extension
  *
- * nette extension pro zavadeni front-loader sluzby jako rozsireni
- *
  * @author  geniv
  * @package FrontLoader\Bridges\Nette
  */
