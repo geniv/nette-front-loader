@@ -7,7 +7,7 @@ $ composer require geniv/nette-front-loader
 ```
 or
 ```json
-"geniv/nette-front-loader": ">=1.0"
+"geniv/nette-front-loader": ">=1.0.0"
 ```
 
 require:
