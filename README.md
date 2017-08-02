@@ -7,7 +7,7 @@ $ composer require geniv/nette-front-loader
 ```
 or
 ```json
-"geniv/nette-front-loader": ">=1.0"
+"geniv/nette-front-loader": ">=1.0.0"
 ```
 
 require:
@@ -23,7 +23,7 @@ neon configure:
 # front loader
 frontLoader:
 #   debugger: false
-#   productionMode: true
+#   productionMode: true   
     dir: %wwwDir%
     css:    # files without extension
         - css/global
@@ -40,6 +40,8 @@ frontLoader:
     tagDev: '.'
     tagProd: '.min.'
 ```
+
+`if productionMode is not defined or set null then loader will be automatic detect production mode`
 
 neon configure extension:
 ```neon
