@@ -15,10 +15,10 @@ use Nette\DI\CompilerExtension;
  */
 class Extension extends CompilerExtension
 {
-    /** @var array vychozi hodnoty */
+    /** @var array default values */
     private $defaults = [
         'debugger'       => true,
-        'productionMode' => false,
+        'productionMode' => null,   // default null => automatic mode
         'dir'            => null,
         'css'            => [],
         'js'             => [],
@@ -35,7 +35,7 @@ class Extension extends CompilerExtension
         $builder = $this->getContainerBuilder();
         $config = $this->validateConfig($this->defaults);
 
-        // vlozeni detekce produkcniho modu, pokud neni definovano
+        // if is set then manual set value
         if (!isset($config['productionMode'])) {
             $config['productionMode'] = $builder->parameters['productionMode'];
         }
@@ -59,7 +59,7 @@ class Extension extends CompilerExtension
         $config = $this->validateConfig($this->defaults);
 
         if ($config['debugger']) {
-            // pripojeni panelu do tracy
+            // add tracy panel
             $builder->getDefinition($this->prefix('default'))
                 ->addSetup('?->register(?)', [$this->prefix('@panel'), '@self']);
         }
