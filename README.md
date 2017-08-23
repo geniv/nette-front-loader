@@ -60,7 +60,7 @@ protected function createComponentFrontLoader(FrontLoader $frontLoader)
 ```
 
 @layout.latte
-####for CSS
+#### for CSS
 ```latte
 {block head}
     {control frontLoader:css}
@@ -73,7 +73,7 @@ or defined source
 {/block}
 ```
 
-####for JS
+#### for JS
 ```latte
 {block scripts}
     {control frontLoader:js}
