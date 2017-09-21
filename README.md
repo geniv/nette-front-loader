@@ -43,6 +43,10 @@ frontLoader:
 
 `if productionMode is not defined or set null then loader will be automatic detect production mode`
 
+`developmet` or `stage` environment is development (`tagDev`) settings 
+
+`production` environment is production (`tagProd`) settings 
+
 neon configure extension:
 ```neon
 extensions:
