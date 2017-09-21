@@ -37,7 +37,7 @@ class Extension extends CompilerExtension
 
         // if is set then manual set value
         if (!isset($config['productionMode'])) {
-            $config['productionMode'] = $builder->parameters['productionMode'];
+            $config['productionMode'] = $builder->parameters['environment'] == 'production';    // automatic detect production environment
         }
 
         // definition loader

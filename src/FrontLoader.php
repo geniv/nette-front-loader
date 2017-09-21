@@ -70,6 +70,7 @@ class FrontLoader extends Control
                 if ($this->logger && $parameters['productionMode']) {
                     $this->logger->log('File: "' . $path . $name . '" does not exist!', ILogger::WARNING);
                 }
+                echo '<!-- file ' . $name . ' not exist! -->';
             }
         }, $files);
     }
