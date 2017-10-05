@@ -42,11 +42,11 @@ class Extension extends CompilerExtension
 
         // definition loader
         $builder->addDefinition($this->prefix('default'))
-            ->setClass(FrontLoader::class, [$config]);
+            ->setFactory(FrontLoader::class, [$config]);
 
         // definition panel
         $builder->addDefinition($this->prefix('panel'))
-            ->setClass(Panel::class);
+            ->setFactory(Panel::class);
     }
 
 
