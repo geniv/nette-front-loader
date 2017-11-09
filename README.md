@@ -2,6 +2,8 @@ Front loader
 ============
 for CSS &amp; JS loader
 
+Installation
+------------
 ```sh
 $ composer require geniv/nette-front-loader
 ```
