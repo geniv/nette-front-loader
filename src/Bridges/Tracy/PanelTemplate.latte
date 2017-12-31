@@ -1,7 +1,7 @@
 <h1>Front loader</h1>
 <div class="tracy-inner">
     <table n:foreach="$files as $type => $items">
-        <caption>{$type|upper}</caption>
+        <caption><strong>{$type|upper}</strong></caption>
         <tr>
             <th>File / Url</th>
             <th>Modify time</th>
@@ -19,7 +19,7 @@
         <br>
         <h2>Vendor files:</h2>
         <table n:foreach="$vendorFiles as $type => $items">
-            <caption>{$type|upper}</caption>
+            <caption><strong>{$type|upper}</strong></caption>
             <tr>
                 <th>Input file</th>
             </tr>
