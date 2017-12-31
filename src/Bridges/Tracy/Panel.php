@@ -4,11 +4,6 @@ namespace FrontLoader\Bridges\Tracy;
 
 use FrontLoader\FrontLoader;
 use Latte\Engine;
-use Locale\Locale;
-use Nette\Application\Application;
-use Latte\MacroTokens;
-use Latte\Parser;
-use Latte\PhpWriter;
 use Nette\DI\Container;
 use Nette\SmartObject;
 use Tracy\Debugger;
@@ -75,7 +70,8 @@ class Panel implements IBarPanel
     public function getPanel()
     {
         $params = [
-            'files' => $this->frontLoader->getFiles(),
+            'files'       => $this->frontLoader->getFiles(),
+            'vendorFiles' => $this->frontLoader->getVendorFiles(),
         ];
 
         $latte = new Engine;

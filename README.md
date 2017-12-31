@@ -44,8 +44,8 @@ frontLoader:
     envProd: 'production'
     compile:
         inputDir: %wwwDir%/../vendor/geniv
-        outputFileScss: %wwwDir%/../assets/scss/vendors/vendor-geniv.scss
-        outputFileJs: %wwwDir%/../assets/js/vendor-geniv.js
+        outputFileScss: %wwwDir%/../assets/scss/vendors/composer-components/composer-components.scss
+        outputFileJs: %wwwDir%/../assets/js/composer-components.js
         exclude:
             - CookieBar.scss
             - CookieBar.js

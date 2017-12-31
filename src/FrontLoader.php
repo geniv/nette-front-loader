@@ -22,6 +22,10 @@ class FrontLoader extends Control
     private $logger;
     /** @var array */
     private $files = [];
+    /** @var array */
+    private $vendorFiles = [];
+    /** @var array */
+    private $vendorOutputFiles = [];
 
 
     /**
@@ -85,13 +89,15 @@ class FrontLoader extends Control
                     $scss = '// vendor files scss' . PHP_EOL;
                     foreach (Finder::findFiles('*.scss')->from($parameters['compile']['inputDir']) as $file) {
                         if (isset($parameters['compile']['exclude']) ? !in_array(basename($file), $parameters['compile']['exclude']) : true) {
-                            $scss .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $this->getFilePath($parameters['dir'], $file) . PHP_EOL;
+                            $name = $this->getFilePath($parameters['dir'], $file);
+                            $scss .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
                             $scss .= file_get_contents($file);
+                            $this->vendorFiles[$type][] = $name;
                         }
                     }
 
                     if (file_put_contents($parameters['compile']['outputFileScss'], $scss) && chmod($parameters['compile']['outputFileScss'], 0777)) {
-                        echo '<!-- SCSS file has compile. -->' . PHP_EOL;
+                        $this->vendorOutputFiles[$type] = $this->getFilePath($parameters['dir'], $parameters['compile']['outputFileScss']);
                     }
                     break;
 
@@ -99,13 +105,15 @@ class FrontLoader extends Control
                     $js = '// vendor files js' . PHP_EOL;
                     foreach (Finder::findFiles('*.js')->from($parameters['compile']['inputDir']) as $file) {
                         if (isset($parameters['compile']['exclude']) ? !in_array(basename($file), $parameters['compile']['exclude']) : true) {
-                            $js .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $this->getFilePath($parameters['dir'], $file) . PHP_EOL;
+                            $name = $this->getFilePath($parameters['dir'], $file);
+                            $js .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
                             $js .= file_get_contents($file);
+                            $this->vendorFiles[$type][] = $name;
                         }
                     }
 
                     if (file_put_contents($parameters['compile']['outputFileJs'], $js) && chmod($parameters['compile']['outputFileJs'], 0777)) {
-                        echo '<!-- JS file has compile. -->' . PHP_EOL;
+                        $this->vendorOutputFiles[$type] = $this->getFilePath($parameters['dir'], $parameters['compile']['outputFileJs']);
                     }
                     break;
             }
@@ -203,14 +211,40 @@ class FrontLoader extends Control
 
 
     /**
-     * Get files for tracy.
+     * Get files.
      *
      * Use in Panel::getPanel().
      *
-     * @return mixed
+     * @return array
      */
     public function getFiles()
     {
         return $this->files;
+    }
+
+
+    /**
+     * Get vendor files.
+     *
+     * Use in Panel::getPanel().
+     *
+     * @return array
+     */
+    public function getVendorFiles()
+    {
+        return $this->vendorFiles;
+    }
+
+
+    /**
+     * Get vendor output files.
+     *
+     * Use in Panel::getPanel().
+     *
+     * @return array
+     */
+    public function getVendorOutputFiles()
+    {
+        return $this->vendorOutputFiles;
     }
 }

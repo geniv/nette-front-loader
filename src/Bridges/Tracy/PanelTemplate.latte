@@ -15,4 +15,26 @@
             <td colspan="2" style="text-align: center;">No file</td>
         </tr>
     </table>
+    {if $vendorFiles}
+        <br>
+        <h2>Vendor files:</h2>
+        <table n:foreach="$vendorFiles as $type => $items">
+            <caption>{$type|upper}</caption>
+            <tr>
+                <th>File</th>
+            </tr>
+            <tr n:foreach="$items as $file">
+                <td>{$file}</td>
+            </tr>
+            <tr n:ifset="$vendorOutputFiles[$type]">
+                <th>Output file</th>
+            </tr>
+            <tr n:ifset="$vendorOutputFiles[$type]">
+                <td>{$vendorOutputFiles[$type]}</td>
+            </tr>
+            <tr n:if="$iterations==0">
+                <td style="text-align: center;">No file</td>
+            </tr>
+        </table>
+    {/if}
 </div>
