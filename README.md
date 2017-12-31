@@ -25,7 +25,7 @@ neon configure:
 # front loader
 frontLoader:
 #   debugger: false
-#   productionMode: true   
+#   productionMode: true
     dir: %wwwDir%
     css:    # files without extension
         - css/global
@@ -41,6 +41,14 @@ frontLoader:
             - js/script2
     tagDev: '.'
     tagProd: '.min.'
+    envProd: 'production'
+    compile:
+        inputDir: %wwwDir%/../vendor/geniv
+        outputFileScss: %wwwDir%/../assets/scss/vendors/vendor-geniv.scss
+        outputFileJs: %wwwDir%/../assets/js/vendor-geniv.js
+        exclude:
+            - CookieBar.scss
+            - CookieBar.js
 ```
 
 `if productionMode is not defined or set null then loader will be automatic detect production mode`

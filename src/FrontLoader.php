@@ -4,6 +4,7 @@ namespace FrontLoader;
 
 use Exception;
 use Nette\Application\UI\Control;
+use Nette\Utils\Finder;
 use Tracy\ILogger;
 
 
@@ -36,11 +37,30 @@ class FrontLoader extends Control
 
         // pokud parametr table neexistuje
         if (!isset($parameters['dir'])) {
-            throw new Exception('Parameters dir is not defined in configure! (dir: %wwwDir%)');
+            throw new Exception('Parameter dir is not defined in configure! (dir: %wwwDir%)');
+        }
+
+        if ($parameters['compile']) {
+            if (!isset($parameters['compile']['inputDir']) || !isset($parameters['compile']['outputFileScss']) || !isset($parameters['compile']['outputFileJs'])) {
+                throw new Exception('Parameter inputDir|outputFileScss|outputFileJs is not defined in configure!');
+            }
         }
 
         $this->parameters = $parameters;
         $this->logger = $logger;
+    }
+
+
+    /**
+     * Get file path.
+     *
+     * @param $dir
+     * @param $file
+     * @return bool|string
+     */
+    private function getFilePath($dir, $file)
+    {
+        return substr(realpath($file), strlen(realpath($dir . '/..')) + 1);
     }
 
 
@@ -58,6 +78,39 @@ class FrontLoader extends Control
         // separe last path
         $dir = basename($path);
 
+        if (!$parameters['productionMode'] && $parameters['compile']) {
+            // compile on case debug||stage + define compile block
+            switch ($type) {
+                case 'css':
+                    $scss = '// vendor files scss' . PHP_EOL;
+                    foreach (Finder::findFiles('*.scss')->from($parameters['compile']['inputDir']) as $file) {
+                        if (isset($parameters['compile']['exclude']) ? !in_array(basename($file), $parameters['compile']['exclude']) : true) {
+                            $scss .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $this->getFilePath($parameters['dir'], $file) . PHP_EOL;
+                            $scss .= file_get_contents($file);
+                        }
+                    }
+
+                    if (file_put_contents($parameters['compile']['outputFileScss'], $scss) && chmod($parameters['compile']['outputFileScss'], 0777)) {
+                        echo '<!-- SCSS file has compile. -->' . PHP_EOL;
+                    }
+                    break;
+
+                case 'js':
+                    $js = '// vendor files js' . PHP_EOL;
+                    foreach (Finder::findFiles('*.js')->from($parameters['compile']['inputDir']) as $file) {
+                        if (isset($parameters['compile']['exclude']) ? !in_array(basename($file), $parameters['compile']['exclude']) : true) {
+                            $js .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $this->getFilePath($parameters['dir'], $file) . PHP_EOL;
+                            $js .= file_get_contents($file);
+                        }
+                    }
+
+                    if (file_put_contents($parameters['compile']['outputFileJs'], $js) && chmod($parameters['compile']['outputFileJs'], 0777)) {
+                        echo '<!-- JS file has compile. -->' . PHP_EOL;
+                    }
+                    break;
+            }
+        }
+
         // process array
         return array_map(function ($item) use ($type, $parameters, $dir, $path) {
             $name = $item . ($parameters['productionMode'] ? $parameters['tagProd'] : $parameters['tagDev']) . $type;
@@ -70,7 +123,7 @@ class FrontLoader extends Control
                 if ($this->logger && $parameters['productionMode']) {
                     $this->logger->log('File: "' . $path . $name . '" does not exist!', ILogger::WARNING);
                 }
-                echo '<!-- file ' . $name . ' not exist! -->';
+                echo '<!-- file ' . $name . ' not exist! -->' . PHP_EOL;
             }
         }, $files);
     }
