@@ -24,6 +24,8 @@ class Extension extends CompilerExtension
         'js'             => [],
         'tagDev'         => '.',
         'tagProd'        => '.min.',
+        'envProd'        => 'production',   // environment production
+        'compile'        => [],
     ];
 
 
@@ -37,7 +39,7 @@ class Extension extends CompilerExtension
 
         // if is set then manual set value
         if (!isset($config['productionMode'])) {
-            $config['productionMode'] = $builder->parameters['environment'] == 'production';    // automatic detect production environment
+            $config['productionMode'] = $builder->parameters['environment'] == $config['envProd'];    // automatic detect production environment
         }
 
         // definition loader
