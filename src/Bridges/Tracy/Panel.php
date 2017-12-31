@@ -70,8 +70,9 @@ class Panel implements IBarPanel
     public function getPanel()
     {
         $params = [
-            'files'       => $this->frontLoader->getFiles(),
-            'vendorFiles' => $this->frontLoader->getVendorFiles(),
+            'files'             => $this->frontLoader->getFiles(),
+            'vendorFiles'       => $this->frontLoader->getVendorFiles(),
+            'vendorOutputFiles' => $this->frontLoader->getVendorOutputFiles(),
         ];
 
         $latte = new Engine;
