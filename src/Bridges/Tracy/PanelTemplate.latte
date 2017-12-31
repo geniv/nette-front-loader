@@ -23,8 +23,14 @@
             <tr>
                 <th>File</th>
             </tr>
-            <tr n:foreach="$items as $mtime => $file">
+            <tr n:foreach="$items as $file">
                 <td>{$file}</td>
+            </tr>
+            <tr n:ifset="$vendorOutputFiles[$type]">
+                <th>Output file</th>
+            </tr>
+            <tr n:ifset="$vendorOutputFiles[$type]">
+                <td>{$vendorOutputFiles[$type]}</td>
             </tr>
             <tr n:if="$iterations==0">
                 <td style="text-align: center;">No file</td>

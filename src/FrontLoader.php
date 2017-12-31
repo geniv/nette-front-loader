@@ -24,6 +24,8 @@ class FrontLoader extends Control
     private $files = [];
     /** @var array */
     private $vendorFiles = [];
+    /** @var array */
+    private $vendorOutputFiles = [];
 
 
     /**
@@ -90,12 +92,12 @@ class FrontLoader extends Control
                             $name = $this->getFilePath($parameters['dir'], $file);
                             $scss .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
                             $scss .= file_get_contents($file);
-                            $this->vendorFiles[$type] = $name;
+                            $this->vendorFiles[$type][] = $name;
                         }
                     }
 
                     if (file_put_contents($parameters['compile']['outputFileScss'], $scss) && chmod($parameters['compile']['outputFileScss'], 0777)) {
-                        echo '<!-- SCSS file has compile. -->' . PHP_EOL;
+                        $this->vendorOutputFiles[$type] = $this->getFilePath($parameters['dir'], $parameters['compile']['outputFileScss']);
                     }
                     break;
 
@@ -106,12 +108,12 @@ class FrontLoader extends Control
                             $name = $this->getFilePath($parameters['dir'], $file);
                             $js .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
                             $js .= file_get_contents($file);
-                            $this->vendorFiles[$type] = $name;
+                            $this->vendorFiles[$type][] = $name;
                         }
                     }
 
                     if (file_put_contents($parameters['compile']['outputFileJs'], $js) && chmod($parameters['compile']['outputFileJs'], 0777)) {
-                        echo '<!-- JS file has compile. -->' . PHP_EOL;
+                        $this->vendorOutputFiles[$type] = $this->getFilePath($parameters['dir'], $parameters['compile']['outputFileJs']);
                     }
                     break;
             }
@@ -231,5 +233,18 @@ class FrontLoader extends Control
     public function getVendorFiles()
     {
         return $this->vendorFiles;
+    }
+
+
+    /**
+     * Get vendor output files.
+     *
+     * Use in Panel::getPanel().
+     *
+     * @return array
+     */
+    public function getVendorOutputFiles()
+    {
+        return $this->vendorOutputFiles;
     }
 }
