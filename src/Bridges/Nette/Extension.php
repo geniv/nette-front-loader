@@ -25,6 +25,8 @@ class Extension extends CompilerExtension
         'tagDev'         => '.',
         'tagProd'        => '.min.',
         'envProd'        => 'production',   // environment production
+        'modifyTimeVar'  => 'mt',
+        'indentation'    => '    ',
         'compile'        => [],
     ];
 
