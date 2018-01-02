@@ -42,6 +42,8 @@ frontLoader:
     tagDev: '.'
     tagProd: '.min.'
     envProd: 'production'
+    modifyTimeVar: 'mt'
+    indentation: "    "
     compile:
         inputDir: %wwwDir%/../vendor/geniv
         outputFileScss: %wwwDir%/../assets/scss/vendors/composer-components/composer-components.scss

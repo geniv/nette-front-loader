@@ -126,12 +126,12 @@ class FrontLoader extends Control
             if (substr($name, 0, 4) == 'http') {    // detect url
                 return $item;
             } else if (file_exists($path . $name)) {    // detect file
-                return $dir . '/' . $name . '?mt=' . filemtime($path . $name);
+                return $dir . '/' . $name . '?' . $parameters['modifyTimeVar'] . '=' . filemtime($path . $name);
             } else {
                 if ($this->logger && $parameters['productionMode']) {
                     $this->logger->log('File: "' . $path . $name . '" does not exist!', ILogger::WARNING);
                 }
-                echo '<!-- file ' . $name . ' not exist! -->' . PHP_EOL;
+                echo $this->parameters['indentation'] . '<!-- file ' . $name . ' not exist! -->' . PHP_EOL;
             }
         }, $files);
     }
@@ -148,11 +148,11 @@ class FrontLoader extends Control
     {
         switch ($type) {
             case 'css':
-                $format = '<link rel="stylesheet" href="%s">';
+                $format = $this->parameters['indentation'] . '<link rel="stylesheet" href="%s">';
                 break;
 
             case 'js':
-                $format = '<script type="text/javascript" src="%s"></script>';
+                $format = $this->parameters['indentation'] . '<script type="text/javascript" src="%s"></script>';
                 break;
         }
 
@@ -204,7 +204,7 @@ class FrontLoader extends Control
                 // transfer for tracy
                 $this->files[$type] = $files;
 
-                echo $this->renderFiles($files, $type);
+                echo $this->renderFiles($files, $type) . PHP_EOL;
             }
         }
     }
