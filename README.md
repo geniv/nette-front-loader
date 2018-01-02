@@ -44,6 +44,9 @@ frontLoader:
     envProd: 'production'
     modifyTimeVar: 'mt'
     indentation: "    "
+#   indentation:
+#       css: "    "
+#       js: "  "
     compile:
         inputDir: %wwwDir%/../vendor/geniv
         outputFileScss: %wwwDir%/../assets/scss/vendors/composer-components/composer-components.scss

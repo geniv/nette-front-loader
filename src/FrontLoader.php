@@ -131,7 +131,7 @@ class FrontLoader extends Control
                 if ($this->logger && $parameters['productionMode']) {
                     $this->logger->log('File: "' . $path . $name . '" does not exist!', ILogger::WARNING);
                 }
-                echo $this->parameters['indentation'] . '<!-- file ' . $name . ' not exist! -->' . PHP_EOL;
+                echo '<!-- file ' . $name . ' not exist! -->' . PHP_EOL;
             }
         }, $files);
     }
@@ -146,13 +146,14 @@ class FrontLoader extends Control
      */
     private function renderFiles($files, $type)
     {
+        $indentation = (is_array($this->parameters['indentation']) ? (isset($this->parameters['indentation'][$type]) ? $this->parameters['indentation'][$type] : '') : $this->parameters['indentation']);
         switch ($type) {
             case 'css':
-                $format = $this->parameters['indentation'] . '<link rel="stylesheet" href="%s">';
+                $format = $indentation . '<link rel="stylesheet" href="%s">';
                 break;
 
             case 'js':
-                $format = $this->parameters['indentation'] . '<script type="text/javascript" src="%s"></script>';
+                $format = $indentation . '<script type="text/javascript" src="%s"></script>';
                 break;
         }
 
