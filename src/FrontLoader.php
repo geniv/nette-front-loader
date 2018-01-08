@@ -96,7 +96,8 @@ class FrontLoader extends Control
                         }
                     }
 
-                    if (file_put_contents($parameters['compile']['outputFileScss'], $scss) && chmod($parameters['compile']['outputFileScss'], 0777)) {
+                    if (file_put_contents($parameters['compile']['outputFileScss'], $scss)) {
+                        @chmod($parameters['compile']['outputFileScss'], 0777);
                         $this->vendorOutputFiles[$type] = $this->getFilePath($parameters['dir'], $parameters['compile']['outputFileScss']);
                     }
                     break;
@@ -112,7 +113,8 @@ class FrontLoader extends Control
                         }
                     }
 
-                    if (file_put_contents($parameters['compile']['outputFileJs'], $js) && chmod($parameters['compile']['outputFileJs'], 0777)) {
+                    if (file_put_contents($parameters['compile']['outputFileJs'], $js)) {
+                        @chmod($parameters['compile']['outputFileJs'], 0777);
                         $this->vendorOutputFiles[$type] = $this->getFilePath($parameters['dir'], $parameters['compile']['outputFileJs']);
                     }
                     break;
