@@ -26,6 +26,7 @@ neon configure:
 frontLoader:
 #   debugger: false
 #   productionMode: true
+#   developmentMode: true
     dir: %wwwDir%
     css:    # files without extension
         - css/global
@@ -41,6 +42,7 @@ frontLoader:
             - js/script2
     tagDev: '.'
     tagProd: '.min.'
+    envDev: 'development'
     envProd: 'production'
     modifyTimeVar: 'mt'
     indentation: "    "
@@ -58,9 +60,11 @@ frontLoader:
 
 `if productionMode is not defined or set null then loader will be automatic detect production mode`
 
-`developmet` or `stage` environment is development (`tagDev`) settings 
+`developmet` or `stage` environment is development (`tagDev`) settings (full css).
 
-`production` environment is production (`tagProd`) settings 
+`production` environment is production (`tagProd`) settings (minimal css).
+
+`compile` block work only development mode.
 
 neon configure extension:
 ```neon

@@ -17,17 +17,19 @@ class Extension extends CompilerExtension
 {
     /** @var array default values */
     private $defaults = [
-        'debugger'       => true,
-        'productionMode' => null,   // default null => automatic mode
-        'dir'            => null,
-        'css'            => [],
-        'js'             => [],
-        'tagDev'         => '.',
-        'tagProd'        => '.min.',
-        'envProd'        => 'production',   // environment production
-        'modifyTimeVar'  => 'mt',
-        'indentation'    => '    ',
-        'compile'        => [],
+        'debugger'        => true,
+        'productionMode'  => null,   // default null => automatic mode
+        'developmentMode' => null,   // default null => automatic mode
+        'dir'             => null,
+        'css'             => [],
+        'js'              => [],
+        'tagDev'          => '.',
+        'tagProd'         => '.min.',
+        'envDev'          => 'development',   // environment production
+        'envProd'         => 'production',   // environment production
+        'modifyTimeVar'   => 'mt',
+        'indentation'     => '    ',
+        'compile'         => [],
     ];
 
 
@@ -41,7 +43,12 @@ class Extension extends CompilerExtension
 
         // if is set then manual set value
         if (!isset($config['productionMode'])) {
-            $config['productionMode'] = $builder->parameters['environment'] == $config['envProd'];    // automatic detect production environment
+            $config['productionMode'] = $builder->parameters['environment'] == $config['envProd'];  // automatic detect production environment
+        }
+
+        // if is set then manual set value
+        if (!isset($config['developmentMode'])) {
+            $config['developmentMode'] = $builder->parameters['environment'] == $config['envDev'];  // automatic detect development environment
         }
 
         // definition loader

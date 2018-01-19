@@ -82,8 +82,8 @@ class FrontLoader extends Control
         // separe last path
         $dir = basename($path);
 
-        if (!$parameters['productionMode'] && $parameters['compile']) {
-            // compile on case debug||stage + define compile block
+        if ($parameters['developmentMode'] && $parameters['compile']) {
+            // compile on case debug + define compile block
             switch ($type) {
                 case 'css':
                     $scss = '// vendor files scss' . PHP_EOL;
@@ -149,6 +149,7 @@ class FrontLoader extends Control
     private function renderFiles($files, $type)
     {
         $indentation = (is_array($this->parameters['indentation']) ? (isset($this->parameters['indentation'][$type]) ? $this->parameters['indentation'][$type] : '') : $this->parameters['indentation']);
+        $format = '';
         switch ($type) {
             case 'css':
                 $format = $indentation . '<link rel="stylesheet" href="%s">';
