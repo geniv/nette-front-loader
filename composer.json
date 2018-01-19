@@ -9,7 +9,7 @@
     "js",
     "geniv"
   ],
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-only",
   "authors": [
     {
       "name": "Radek Fryšták",
