@@ -26,7 +26,7 @@ neon configure:
 frontLoader:
 #   debugger: false
 #   productionMode: true
-#   developmentMode: true
+#   developmentMode: false
     dir: %wwwDir%
     css:    # files without extension
         - css/global
@@ -64,7 +64,20 @@ frontLoader:
 
 `production` environment is production (`tagProd`) settings (minimal css).
 
-`compile` block work only development mode.
+`compile` block work only `developmentMode`, other accept: `productionMode`
+
+#### each mode states:
+- **development**:
+    - _productionMode: false_
+    - _developmentMode: true_
+
+- **stage**:
+    - _productionMode: false_
+    - _developmentMode: false_
+
+- **production**:
+    - _productionMode: true_
+    - _developmentMode: false_
 
 neon configure extension:
 ```neon
