@@ -105,7 +105,7 @@ protected function createComponentFrontLoader(FrontLoader $frontLoader)
 or defined source
 ```latte
 {block head}
-    {control frontLoader:css, 'front'}
+    {control frontLoader:css 'front'}
 {/block}
 ```
 
@@ -118,7 +118,7 @@ or defined source
 or defined source
 ```latte
 {block scripts}
-    {control frontLoader:js, 'front'}
+    {control frontLoader:js 'front'}
 {/block}
 ```
 
