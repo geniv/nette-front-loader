@@ -28,18 +28,20 @@ frontLoader:
 #   productionMode: true
 #   developmentMode: false
     dir: %wwwDir%
-    css:    # files without extension
+    css:	# files without extension
         - css/global
+        - static:css/global1
         - "https://fonts.googleapis.com"
         front:  # source
             - css/styles1
-            - css/styles2
-    js:     # files without extension
+            - static:css/styles2
+    js:		# files without extension
         - js/global
+        - static:js/global1
         - "https://cdnjs.com"
         front:  # source
             - js/script1
-            - js/script2
+            - static:js/script2
     tagDev: '.'
     tagProd: '.min.'
     envDev: 'development'
@@ -64,7 +66,9 @@ frontLoader:
 
 `production` environment is production (`tagProd`) settings (minimal css).
 
-`compile` block work only `developmentMode`, other accept: `productionMode`
+`compile` block work only `developmentMode`, other accept: `productionMode`.
+
+Setting for load css/js file without change environment name begin keyword: `static:` like `http`.
 
 #### each mode states:
 - **development**:

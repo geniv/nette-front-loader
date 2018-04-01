@@ -16,6 +16,11 @@ use Tracy\ILogger;
  */
 class FrontLoader extends Control
 {
+    // type static script
+    const
+        TYPE_HTTP = 'http',
+        TYPE_STATIC = 'static:';
+
     /** @var array */
     private $parameters;
     /** @var null|ILogger */
@@ -124,18 +129,41 @@ class FrontLoader extends Control
         // process array
         return array_map(function ($item) use ($type, $parameters, $dir, $path) {
             $name = $item . ($parameters['productionMode'] ? $parameters['tagProd'] : $parameters['tagDev']) . $type;
+            $staticName = $this->getStaticName($item . '.' . $type);
 
-            if (substr($name, 0, 4) == 'http') {    // detect url
+            if (substr($name, 0, 4) == self::TYPE_HTTP) {
+                // detect static http
                 return $item;
-            } else if (file_exists($path . $name)) {    // detect file
+            } else if (substr($name, 0, 7) == self::TYPE_STATIC && file_exists($path . $staticName)) {
+                // detect static file
+                return $dir . '/' . $staticName . '?' . $parameters['modifyTimeVar'] . '=' . filemtime($path . $staticName);
+            } else if (file_exists($path . $name)) {
+                // detect file
                 return $dir . '/' . $name . '?' . $parameters['modifyTimeVar'] . '=' . filemtime($path . $name);
             } else {
+                // switch static file
+                if (substr($name, 0, 7) == self::TYPE_STATIC) {
+                    $name = $this->getStaticName($item . '.' . $type);
+                }
+
                 if ($this->logger && $parameters['productionMode']) {
                     $this->logger->log('File: "' . $path . $name . '" does not exist!', ILogger::WARNING);
                 }
                 echo '<!-- file ' . $name . ' not exist! -->' . PHP_EOL;
             }
         }, $files);
+    }
+
+
+    /**
+     * Get static name.
+     *
+     * @param $name
+     * @return string
+     */
+    private function getStaticName($name)
+    {
+        return (string) substr($name, 7);
     }
 
 
