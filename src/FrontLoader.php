@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace FrontLoader;
 
@@ -63,11 +63,11 @@ class FrontLoader extends Control
     /**
      * Get file path.
      *
-     * @param $dir
-     * @param $file
-     * @return bool|string
+     * @param string $dir
+     * @param string $file
+     * @return string
      */
-    private function getFilePath($dir, $file)
+    private function getFilePath(string $dir, string $file): string
     {
         return substr(realpath($file), strlen(realpath($dir . '/..')) + 1);
     }
@@ -76,11 +76,11 @@ class FrontLoader extends Control
     /**
      * Select valid files.
      *
-     * @param $files
-     * @param $type
+     * @param array  $files
+     * @param string $type
      * @return array
      */
-    private function processFiles($files, $type)
+    private function processFiles(array $files, string $type): array
     {
         $parameters = $this->parameters;
         $path = $parameters['dir'] . '/';
@@ -158,10 +158,10 @@ class FrontLoader extends Control
     /**
      * Get static name.
      *
-     * @param $name
+     * @param string $name
      * @return string
      */
-    private function getStaticName($name)
+    private function getStaticName(string $name): string
     {
         return (string) substr($name, 7);
     }
@@ -170,11 +170,11 @@ class FrontLoader extends Control
     /**
      * Render valid files.
      *
-     * @param $files
-     * @param $type
+     * @param array  $files
+     * @param string $type
      * @return string
      */
-    private function renderFiles($files, $type)
+    private function renderFiles(array $files, string $type): string
     {
         $indentation = (is_array($this->parameters['indentation']) ? (isset($this->parameters['indentation'][$type]) ? $this->parameters['indentation'][$type] : '') : $this->parameters['indentation']);
         $format = '';
@@ -198,11 +198,11 @@ class FrontLoader extends Control
     /**
      * Magic method.
      *
-     * @param $name
-     * @param $args
+     * @param string $name
+     * @param array  $args
      * @return mixed|void
      */
-    public function __call($name, $args)
+    public function __call(string $name, array $args)
     {
         // if not onAnchor
         if (!in_array($name, ['onAnchor'])) {
@@ -249,7 +249,7 @@ class FrontLoader extends Control
      *
      * @return array
      */
-    public function getFiles()
+    public function getFiles(): array
     {
         return $this->files;
     }
@@ -262,7 +262,7 @@ class FrontLoader extends Control
      *
      * @return array
      */
-    public function getVendorFiles()
+    public function getVendorFiles(): array
     {
         return $this->vendorFiles;
     }
@@ -275,7 +275,7 @@ class FrontLoader extends Control
      *
      * @return array
      */
-    public function getVendorOutputFiles()
+    public function getVendorOutputFiles(): array
     {
         return $this->vendorOutputFiles;
     }
