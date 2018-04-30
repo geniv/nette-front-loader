@@ -196,13 +196,13 @@ class FrontLoader extends Control
 
 
     /**
-     * Magic method.
+     * __call.
      *
-     * @param string $name
-     * @param array  $args
+     * @param $name
+     * @param $args
      * @return mixed|void
      */
-    public function __call(string $name, array $args)
+    public function __call($name, $args)
     {
         // if not onAnchor
         if (!in_array($name, ['onAnchor'])) {
