@@ -94,9 +94,9 @@ class FrontLoader extends Control
                     $scss = '// vendor files scss' . PHP_EOL;
                     foreach (Finder::findFiles('*.scss')->from($parameters['compile']['inputDir']) as $file) {
                         if (isset($parameters['compile']['exclude']) ? !in_array(basename($file), $parameters['compile']['exclude']) : true) {
-                            $name = $this->getFilePath($parameters['dir'], $file);
+                            $name = $this->getFilePath($parameters['dir'], $file->getPathname());
                             $scss .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
-                            $scss .= file_get_contents($file);
+                            $scss .= file_get_contents($file->getPathname());
                             $this->vendorFiles[$type][] = $name;
                         }
                     }
@@ -111,9 +111,9 @@ class FrontLoader extends Control
                     $js = '// vendor files js' . PHP_EOL;
                     foreach (Finder::findFiles('*.js')->from($parameters['compile']['inputDir']) as $file) {
                         if (isset($parameters['compile']['exclude']) ? !in_array(basename($file), $parameters['compile']['exclude']) : true) {
-                            $name = $this->getFilePath($parameters['dir'], $file);
+                            $name = $this->getFilePath($parameters['dir'], $file->getPathname());
                             $js .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
-                            $js .= file_get_contents($file);
+                            $js .= file_get_contents($file->getPathname());
                             $this->vendorFiles[$type][] = $name;
                         }
                     }
