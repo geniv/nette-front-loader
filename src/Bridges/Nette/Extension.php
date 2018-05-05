@@ -52,14 +52,17 @@ class Extension extends CompilerExtension
         }
 
         // definition loader
-        $default = $builder->addDefinition($this->prefix('default'))
+        $builder->addDefinition($this->prefix('default'))
             ->setFactory(FrontLoader::class, [$config]);
 
         // define panel
         if (isset($config['debugger']) && $config['debugger']) {
             $panel = $builder->addDefinition($this->prefix('panel'))
                 ->setFactory(Panel::class);
-            $default->addSetup([$panel, 'register']);
+
+            // linked panel to tracy
+            $builder->getDefinition('tracy.bar')
+                ->addSetup('addPanel', [$panel]);
         }
     }
 }
