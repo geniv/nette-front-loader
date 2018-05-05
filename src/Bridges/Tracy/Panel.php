@@ -4,9 +4,7 @@ namespace FrontLoader\Bridges\Tracy;
 
 use FrontLoader\FrontLoader;
 use Latte\Engine;
-use Nette\DI\Container;
 use Nette\SmartObject;
-use Tracy\Debugger;
 use Tracy\IBarPanel;
 
 
@@ -20,32 +18,18 @@ class Panel implements IBarPanel
 {
     use SmartObject;
 
-    /** @var FrontLoader front loader from DI */
+    /** @var FrontLoader */
     private $frontLoader;
-    /** @var Container container from DI */
-    private $container;
 
 
     /**
      * Panel constructor.
      *
-     * @param Container $container
-     */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-    }
-
-
-    /**
-     * Register to Tracy.
-     *
      * @param FrontLoader $frontLoader
      */
-    public function register(FrontLoader $frontLoader)
+    public function __construct(FrontLoader $frontLoader)
     {
         $this->frontLoader = $frontLoader;
-        Debugger::getBar()->addPanel($this);
     }
 
 
@@ -75,7 +59,6 @@ class Panel implements IBarPanel
             'vendorFiles'       => $this->frontLoader->getVendorFiles(),
             'vendorOutputFiles' => $this->frontLoader->getVendorOutputFiles(),
         ];
-
         $latte = new Engine;
         return $latte->renderToString(__DIR__ . '/PanelTemplate.latte', $params);
     }
