@@ -56,7 +56,7 @@ class Extension extends CompilerExtension
             ->setFactory(FrontLoader::class, [$config]);
 
         // define panel
-        if (isset($config['debugger']) && $config['debugger']) {
+        if ($config['debugger']) {
             $panel = $builder->addDefinition($this->prefix('panel'))
                 ->setFactory(Panel::class);
 
