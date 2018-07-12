@@ -92,13 +92,11 @@ class FrontLoader extends Control
             switch ($type) {
                 case 'css':
                     $scss = '// vendor files scss' . PHP_EOL;
-                    foreach (Finder::findFiles('*.scss')->from($parameters['compile']['inputDir']) as $file) {
-                        if (isset($parameters['compile']['exclude']) ? !in_array(basename($file), $parameters['compile']['exclude']) : true) {
-                            $name = $this->getFilePath($parameters['dir'], $file->getPathname());
-                            $scss .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
-                            $scss .= file_get_contents($file->getPathname());
-                            $this->vendorFiles[$type][] = $name;
-                        }
+                    foreach (Finder::findFiles('*.scss')->exclude($parameters['compile']['exclude'] ?? [])->from($parameters['compile']['inputDir']) as $file) {
+                        $name = $this->getFilePath($parameters['dir'], $file->getPathname());
+                        $scss .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
+                        $scss .= file_get_contents($file->getPathname());
+                        $this->vendorFiles[$type][] = $name;
                     }
 
                     if (file_put_contents($parameters['compile']['outputFileScss'], $scss)) {
@@ -109,13 +107,11 @@ class FrontLoader extends Control
 
                 case 'js':
                     $js = '// vendor files js' . PHP_EOL;
-                    foreach (Finder::findFiles('*.js')->from($parameters['compile']['inputDir']) as $file) {
-                        if (isset($parameters['compile']['exclude']) ? !in_array(basename($file), $parameters['compile']['exclude']) : true) {
-                            $name = $this->getFilePath($parameters['dir'], $file->getPathname());
-                            $js .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
-                            $js .= file_get_contents($file->getPathname());
-                            $this->vendorFiles[$type][] = $name;
-                        }
+                    foreach (Finder::findFiles('*.js')->exclude($parameters['compile']['exclude'] ?? [])->from($parameters['compile']['inputDir']) as $file) {
+                        $name = $this->getFilePath($parameters['dir'], $file->getPathname());
+                        $js .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
+                        $js .= file_get_contents($file->getPathname());
+                        $this->vendorFiles[$type][] = $name;
                     }
 
                     if (file_put_contents($parameters['compile']['outputFileJs'], $js)) {

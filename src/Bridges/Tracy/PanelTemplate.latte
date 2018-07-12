@@ -8,8 +8,8 @@
         </tr>
         <tr n:foreach="$items as $mtime => $file">
             {php $str=parse_url($file, PHP_URL_QUERY); parse_str($str, $out);}
-            <td>{$file|truncate:40}</td>
-            <td>{ifset $out['mt']}{$out['mt']|date:'d.m.Y H:i:s'}{else}---{/ifset}</td>
+            <td{if !isset($out['mt'])} colspan="2"{/if}>{$file|truncate:80}</td>
+            <td n:ifset="$out['mt']">{$out['mt']|date:'d.m.Y H:i:s'}</td>
         </tr>
         <tr n:if="$iterations==0">
             <td colspan="2" style="text-align: center;">No file</td>
@@ -17,7 +17,7 @@
     </table>
     {if $vendorFiles}
         <br>
-        <h2>Compole vendor files:</h2>
+        <h2>Compile vendor files:</h2>
         <table n:foreach="$vendorFiles as $type => $items">
             <caption><strong>{$type|upper}</strong></caption>
             <tr>
