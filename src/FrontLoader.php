@@ -87,6 +87,7 @@ class FrontLoader extends Control
         // separe last path
         $dir = basename($path);
 
+        // @deprecated
         if ($parameters['developmentMode'] && $parameters['compile']) {
             // compile on case debug + define compile block
             switch ($type) {

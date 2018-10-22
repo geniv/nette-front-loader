@@ -51,13 +51,13 @@ frontLoader:
 #   indentation:
 #       css: "    "
 #       js: "  "
-    compile:
-        inputDir: %wwwDir%/../vendor/geniv
-        outputFileScss: %wwwDir%/../assets/scss/vendors/composer-components/composer-components.scss
-        outputFileJs: %wwwDir%/../assets/js/composer-components.js
-        exclude:
-            - CookieBar.scss
-            - CookieBar.js
+#    compile:   # @deprecated
+#        inputDir: %wwwDir%/../vendor/geniv
+#        outputFileScss: %wwwDir%/../assets/scss/vendors/composer-components/composer-components.scss
+#        outputFileJs: %wwwDir%/../assets/js/composer-components.js
+#        exclude:
+#            - CookieBar.scss
+#            - CookieBar.js
 ```
 
 `if productionMode is not defined or set null then loader will be automatic detect production mode`
