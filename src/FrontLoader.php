@@ -14,7 +14,7 @@ use Tracy\ILogger;
  * @author  geniv, inspired by Petr Gräf
  * @package FrontLoader
  */
-class FrontLoader extends Control
+class FrontLoader extends Control implements IFrontLoader
 {
     // type static script
     const
@@ -87,6 +87,7 @@ class FrontLoader extends Control
         // separe last path
         $dir = basename($path);
 
+        // @deprecated
         if ($parameters['developmentMode'] && $parameters['compile']) {
             // compile on case debug + define compile block
             switch ($type) {
