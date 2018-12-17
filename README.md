@@ -91,9 +91,9 @@ extensions:
 
 usage:
 ```php
-use FrontLoader\FrontLoader;
+use FrontLoader\IFrontLoader;
 
-protected function createComponentFrontLoader(FrontLoader $frontLoader)
+protected function createComponentFrontLoader(IFrontLoader $frontLoader): IFrontLoader
 {
     return $frontLoader;
 }

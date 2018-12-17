@@ -14,7 +14,7 @@ use Tracy\ILogger;
  * @author  geniv, inspired by Petr Gräf
  * @package FrontLoader
  */
-class FrontLoader extends Control
+class FrontLoader extends Control implements IFrontLoader
 {
     // type static script
     const
