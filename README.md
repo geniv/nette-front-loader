@@ -47,17 +47,6 @@ frontLoader:
     envDev: 'development'
     envProd: 'production'
     modifyTimeVar: 'mt'
-    indentation: "    "
-#   indentation:
-#       css: "    "
-#       js: "  "
-#    compile:   # @deprecated
-#        inputDir: %wwwDir%/../vendor/geniv
-#        outputFileScss: %wwwDir%/../assets/scss/vendors/composer-components/composer-components.scss
-#        outputFileJs: %wwwDir%/../assets/js/composer-components.js
-#        exclude:
-#            - CookieBar.scss
-#            - CookieBar.js
 ```
 
 `if productionMode is not defined or set null then loader will be automatic detect production mode`
@@ -95,6 +84,8 @@ use FrontLoader\IFrontLoader;
 
 protected function createComponentFrontLoader(IFrontLoader $frontLoader): IFrontLoader
 {
+    //$frontLoader->setFormat('css', '        <link rel="stylesheet" href="%s">');
+    //$frontLoader->setFormat('js', '    <script type="text/javascript" src="%s"></script>');
     return $frontLoader;
 }
 ```
