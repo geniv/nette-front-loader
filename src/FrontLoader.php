@@ -4,7 +4,6 @@ namespace FrontLoader;
 
 use Exception;
 use Nette\Application\UI\Control;
-use Nette\Utils\Finder;
 use Tracy\ILogger;
 
 
@@ -31,6 +30,11 @@ class FrontLoader extends Control implements IFrontLoader
     private $vendorFiles = [];
     /** @var array */
     private $vendorOutputFiles = [];
+    /** @var array */
+    private $formats = [
+        'css' => '        <link rel="stylesheet" href="%s">',
+        'js'  => '    <script type="text/javascript" src="%s"></script>',
+    ];
 
 
     /**
@@ -49,27 +53,8 @@ class FrontLoader extends Control implements IFrontLoader
             throw new Exception('Parameter dir is not defined in configure! (dir: %wwwDir%)');
         }
 
-        if ($parameters['compile']) {
-            if (!isset($parameters['compile']['inputDir']) || !isset($parameters['compile']['outputFileScss']) || !isset($parameters['compile']['outputFileJs'])) {
-                throw new Exception('Parameter inputDir|outputFileScss|outputFileJs is not defined in configure!');
-            }
-        }
-
         $this->parameters = $parameters;
         $this->logger = $logger;
-    }
-
-
-    /**
-     * Get file path.
-     *
-     * @param string $dir
-     * @param string $file
-     * @return string
-     */
-    private function getFilePath(string $dir, string $file): string
-    {
-        return substr(realpath($file), strlen(realpath($dir . '/..')) + 1);
     }
 
 
@@ -86,42 +71,6 @@ class FrontLoader extends Control implements IFrontLoader
         $path = $parameters['dir'] . '/';
         // separe last path
         $dir = basename($path);
-
-        // @deprecated
-        if ($parameters['developmentMode'] && $parameters['compile']) {
-            // compile on case debug + define compile block
-            switch ($type) {
-                case 'css':
-                    $scss = '// vendor files scss' . PHP_EOL;
-                    foreach (Finder::findFiles('*.scss')->exclude($parameters['compile']['exclude'] ?? [])->from($parameters['compile']['inputDir']) as $file) {
-                        $name = $this->getFilePath($parameters['dir'], $file->getPathname());
-                        $scss .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
-                        $scss .= file_get_contents($file->getPathname());
-                        $this->vendorFiles[$type][] = $name;
-                    }
-
-                    if (file_put_contents($parameters['compile']['outputFileScss'], $scss)) {
-                        @chmod($parameters['compile']['outputFileScss'], 0777);
-                        $this->vendorOutputFiles[$type] = $this->getFilePath($parameters['dir'], $parameters['compile']['outputFileScss']);
-                    }
-                    break;
-
-                case 'js':
-                    $js = '// vendor files js' . PHP_EOL;
-                    foreach (Finder::findFiles('*.js')->exclude($parameters['compile']['exclude'] ?? [])->from($parameters['compile']['inputDir']) as $file) {
-                        $name = $this->getFilePath($parameters['dir'], $file->getPathname());
-                        $js .= PHP_EOL . PHP_EOL . PHP_EOL . '// source file: ' . $name . PHP_EOL;
-                        $js .= file_get_contents($file->getPathname());
-                        $this->vendorFiles[$type][] = $name;
-                    }
-
-                    if (file_put_contents($parameters['compile']['outputFileJs'], $js)) {
-                        @chmod($parameters['compile']['outputFileJs'], 0777);
-                        $this->vendorOutputFiles[$type] = $this->getFilePath($parameters['dir'], $parameters['compile']['outputFileJs']);
-                    }
-                    break;
-            }
-        }
 
         // process array
         return array_map(function ($item) use ($type, $parameters, $dir, $path) {
@@ -161,34 +110,6 @@ class FrontLoader extends Control implements IFrontLoader
     private function getStaticName(string $name): string
     {
         return (string) substr($name, 7);
-    }
-
-
-    /**
-     * Render valid files.
-     *
-     * @param array  $files
-     * @param string $type
-     * @return string
-     */
-    private function renderFiles(array $files, string $type): string
-    {
-        $indentation = (is_array($this->parameters['indentation']) ? (isset($this->parameters['indentation'][$type]) ? $this->parameters['indentation'][$type] : '') : $this->parameters['indentation']);
-        $format = '';
-        switch ($type) {
-            case 'css':
-                $format = $indentation . '<link rel="stylesheet" href="%s">';
-                break;
-
-            case 'js':
-                $format = $indentation . '<script type="text/javascript" src="%s"></script>';
-                break;
-        }
-
-        // process files
-        return implode(PHP_EOL, array_map(function ($item) use ($format) {
-            return sprintf($format, $item);
-        }, $files));
     }
 
 
@@ -236,6 +157,35 @@ class FrontLoader extends Control implements IFrontLoader
                 echo $this->renderFiles($files, $type) . PHP_EOL;
             }
         }
+    }
+
+
+    /**
+     * Render valid files.
+     *
+     * @param array  $files
+     * @param string $type
+     * @return string
+     */
+    private function renderFiles(array $files, string $type): string
+    {
+        $baseUrl = ($this->getTemplate()->baseUrl ?? '') . '/';
+        // process files
+        return implode(PHP_EOL, array_map(function ($item) use ($baseUrl, $type) {
+            return sprintf($this->formats[$type], $baseUrl . $item);
+        }, $files));
+    }
+
+
+    /**
+     * Set format.
+     *
+     * @param string $type
+     * @param string $tag
+     */
+    public function setFormat(string $type, string $tag)
+    {
+        $this->formats[$type] = $tag;
     }
 
 

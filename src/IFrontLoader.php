@@ -13,6 +13,15 @@ interface IFrontLoader
 {
 
     /**
+     * Set format.
+     *
+     * @param string $type
+     * @param string $tag
+     */
+    public function setFormat(string $type, string $tag);
+
+
+    /**
      * Get files.
      *
      * Use in Panel::getPanel().

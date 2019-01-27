@@ -28,8 +28,6 @@ class Extension extends CompilerExtension
         'envDev'          => 'development',   // environment production
         'envProd'         => 'production',   // environment production
         'modifyTimeVar'   => 'mt',
-        'indentation'     => '    ',
-        'compile'         => [],
     ];
 
 
