@@ -4,6 +4,7 @@ namespace FrontLoader;
 
 use Exception;
 use Nette\Application\UI\Control;
+use stdClass;
 use Tracy\ILogger;
 
 
@@ -18,6 +19,7 @@ class FrontLoader extends Control implements IFrontLoader
     // type static script
     const
         TYPE_HTTP = 'http',
+        TYPE_HTTP_SHORT = '//',
         TYPE_STATIC = 'static:';
 
     /** @var array */
@@ -59,6 +61,18 @@ class FrontLoader extends Control implements IFrontLoader
 
 
     /**
+     * Is url.
+     *
+     * @param string $url
+     * @return bool
+     */
+    public static function isUrl(string $url): bool
+    {
+        return substr($url, 0, 4) == self::TYPE_HTTP || substr($url, 0, 2) == self::TYPE_HTTP_SHORT;
+    }
+
+
+    /**
      * Select valid files.
      *
      * @param array  $files
@@ -77,7 +91,7 @@ class FrontLoader extends Control implements IFrontLoader
             $name = $item . ($parameters['productionMode'] ? $parameters['tagProd'] : $parameters['tagDev']) . $type;
             $staticName = $this->getStaticName($item . '.' . $type);
 
-            if (substr($name, 0, 4) == self::TYPE_HTTP) {
+            if (self::isUrl($name)) {
                 // detect static http
                 return $item;
             } else if (substr($name, 0, 7) == self::TYPE_STATIC && file_exists($path . $staticName)) {
@@ -96,6 +110,7 @@ class FrontLoader extends Control implements IFrontLoader
                     $this->logger->log('File: "' . $path . $name . '" does not exist!', ILogger::WARNING);
                 }
                 echo '<!-- file ' . $name . ' not exist! -->' . PHP_EOL;
+                return '';
             }
         }, $files);
     }
@@ -169,10 +184,12 @@ class FrontLoader extends Control implements IFrontLoader
      */
     private function renderFiles(array $files, string $type): string
     {
+        /** @var stdClass $baseUrl */
         $baseUrl = ($this->getTemplate()->baseUrl ?? '') . '/';
         // process files
         return implode(PHP_EOL, array_map(function ($item) use ($baseUrl, $type) {
-            return sprintf($this->formats[$type], $baseUrl . $item);
+            // insert baseUrl only for file
+            return sprintf($this->formats[$type], (self::isUrl($item) ? '' : $baseUrl) . $item);
         }, $files));
     }
 

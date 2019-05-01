@@ -32,6 +32,7 @@ frontLoader:
         - css/global
         - static:css/global1
         - "https://fonts.googleapis.com"
+        - "//fonts.googleapis.com"
         front:  # source
             - css/styles1
             - static:css/styles2
@@ -39,6 +40,7 @@ frontLoader:
         - js/global
         - static:js/global1
         - "https://cdnjs.com"
+        - "//cdnjs.com"
         front:  # source
             - js/script1
             - static:js/script2
